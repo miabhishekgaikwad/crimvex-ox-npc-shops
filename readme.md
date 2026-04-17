@@ -145,57 +145,6 @@ The script performs the following operations:
 4. **Interaction Setup**: Registers ox_target interactions
 5. **Resource Cleanup**: Removes entities on resource stop
 
-Key features in the code:
-
-```lua
-local peds = {}
-
-local generalShops = { 
-    vector4(24.4572, -1346.4485, 28.4970, 270.0),
-    vector4(-3039.6, 584.26, 7.91, 10.67),
-    vector4(-3243.04, 999.98, 12.83, 346.44),
-}
-
-CreateThread(function()
-    local model = `mp_m_shopkeep_01`
-    RequestModel(model)
-    while not HasModelLoaded(model) do Wait(0) end
-
-    for i = 1, #generalShops do
-        local coords = generalShops[i]
-
-        local ped = CreatePed(0, model, coords.x, coords.y, coords.z - 1, coords.w, false, true)
-
-        SetEntityInvincible(ped, true)
-        FreezeEntityPosition(ped, true)
-        SetBlockingOfNonTemporaryEvents(ped, true)
-
-        exports.ox_target:addLocalEntity(ped, {
-            {
-                label = 'Open Shop',
-                icon = 'fa-solid fa-shop',
-                onSelect = function()
-                    exports.ox_inventory:openInventory('shop', {
-                        type = 'General'
-                    })
-                end
-            }
-        })
-
-        peds[#peds + 1] = ped
-    end
-end)
-
-AddEventHandler('onResourceStop', function(resourceName)
-    if resourceName ~= GetCurrentResourceName() then return end
-
-    for i = 1, #peds do
-        if DoesEntityExist(peds[i]) then
-            DeleteEntity(peds[i])
-        end
-    end
-end)
-```
 
 ---
 
