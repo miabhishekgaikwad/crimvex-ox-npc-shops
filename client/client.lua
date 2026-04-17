@@ -14,15 +14,16 @@ local generalShops = {
 
 }
 
+
 CreateThread(function()
-    local model = "mp_m_shopkeep_01"
+    local model = `mp_m_shopkeep_01`
     RequestModel(model)
     while not HasModelLoaded(model) do Wait(0) end
 
     for i = 1, #generalShops do
         local coords = generalShops[i]
 
-        local ped = CreatePed(0, model, coords.x, coords.y, coords.z - 1, coords.w, false, true)
+        local ped = CreatePed(0, model, coords.x, coords.y, coords.z, coords.w, false, true)
 
         SetEntityInvincible(ped, true)
         FreezeEntityPosition(ped, true)
@@ -39,10 +40,30 @@ CreateThread(function()
         })
 
         peds[#peds + 1] = ped
+
+        Wait(1000)
     end
 end)
 
--- resource stop pe sab delete
+CreateThread(function()
+    for i = 1, #generalShops do
+        local coords = generalShops[i]
+
+        local blip = AddBlipForCoord(coords.x, coords.y, coords.z)
+
+        SetBlipSprite(blip, 59)
+        SetBlipDisplay(blip, 4)
+        SetBlipScale(blip, 0.8)
+        SetBlipColour(blip, 69)
+        SetBlipAsShortRange(blip, true)
+
+        BeginTextCommandSetBlipName("STRING")
+        AddTextComponentString("Shop")
+        EndTextCommandSetBlipName(blip)
+        
+    end
+end)
+
 AddEventHandler('onResourceStop', function(resourceName)
     if resourceName ~= GetCurrentResourceName() then return end
 
